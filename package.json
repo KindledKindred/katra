@@ -11,8 +11,8 @@
     "workflow:build": "npm run build:develop && npm run build:production && npm run build:docs",
     "serve": "webpack-dev-server"
   },
-  "author": "Smith",
-  "license": "UNLICENSED",
+  "author": "Opion",
+  "license": "MIT",
   "devDependencies": {
     "@types/chai": "^4.1.7",
     "@types/mocha": "^5.2.5",
