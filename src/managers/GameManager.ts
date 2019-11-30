@@ -1,18 +1,18 @@
-import * as PIXI from "pixi.js";
-import Scene from "scenes/Scene";
+import * as PIXI from 'pixi.js'
+import Scene from 'scenes/Scene'
 
 export default class GameManager {
   // シングルトンインスタンス
-  public static instance: GameManager;
+  public static instance: GameManager
 
   // 初期化時に生成
-  public game!: PIXI.Application;
+  public game!: PIXI.Application
 
   // シーンのトランジション完了フラグ
-  private sceneTransitionOutFinished: boolean = true;
+  private sceneTransitionOutFinished: boolean = true
 
   // 現在のシーンインスタンス
-  private currentScene?: Scene;
+  private currentScene?: Scene
 
   /**
    * コンストラクタ
@@ -20,10 +20,10 @@ export default class GameManager {
    */
   constructor(app: PIXI.Application) {
     if (GameManager.instance) {
-      throw new Error("GameManager can be instantiate only once");
+      throw new Error('GameManager can be instantiate only once')
     }
 
-    this.game = app;
+    this.game = app
   }
 
   /**
@@ -40,44 +40,44 @@ export default class GameManager {
       params.glWidth,
       params.glHeight,
       params.option
-    );
+    )
     // GameManager インスタンス生成
-    const instance = new GameManager(game);
-    GameManager.instance = instance;
+    const instance = new GameManager(game)
+    GameManager.instance = instance
 
     // canvas を DOM に追加
-    document.body.appendChild(game.view);
+    document.body.appendChild(game.view)
 
     // メインループ
     game.ticker.add((delta: number) => {
       if (instance.currentScene) {
-        instance.currentScene.update(delta);
+        instance.currentScene.update(delta)
       }
-    });
+    })
   }
 
   /**
    * 可能であれば新しいシーンへのトランジションを開始
    */
   public static transitionInIfPossible(newScene: Scene): boolean {
-    const instance = GameManager.instance;
+    const instance = GameManager.instance
 
     if (!instance.sceneTransitionOutFinished) {
-      return false;
+      return false
     }
 
     if (instance.currentScene) {
-      instance.currentScene.destroy();
+      instance.currentScene.destroy()
     }
-    instance.currentScene = newScene;
+    instance.currentScene = newScene
 
     if (instance.game) {
-      instance.game.stage.addChild(newScene);
+      instance.game.stage.addChild(newScene)
     }
 
-    newScene.beginTransitionIn((_: Scene) => {});
+    newScene.beginTransitionIn((_: Scene) => {})
 
-    return true;
+    return true
   }
 
   /**
@@ -85,17 +85,17 @@ export default class GameManager {
    * 新しいシーンと古いシーンのトランジションを同時に開始
    */
   public static loadScene(newScene: Scene): void {
-    const instance = GameManager.instance;
+    const instance = GameManager.instance
 
     if (instance.currentScene) {
-      instance.sceneTransitionOutFinished = false;
+      instance.sceneTransitionOutFinished = false
       instance.currentScene.beginTransitionOut((_: Scene) => {
-        instance.sceneTransitionOutFinished = true;
-        GameManager.transitionInIfPossible(newScene);
-      });
+        instance.sceneTransitionOutFinished = true
+        GameManager.transitionInIfPossible(newScene)
+      })
     } else {
-      instance.sceneTransitionOutFinished = true;
-      GameManager.transitionInIfPossible(newScene);
+      instance.sceneTransitionOutFinished = true
+      GameManager.transitionInIfPossible(newScene)
     }
   }
 }
